@@ -17,6 +17,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    void (^block)() = nil;
+    
+    sleep(10);
+    block = ^{
+        NSLog(@"1");
+    };
+    block();
 }
 
 

@@ -30,6 +30,8 @@
 }
 
 - (void)sd_setHighlightedImageWithURL:(NSURL *)url options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletionBlock)completedBlock {
+    
+    // cancel current image load operation
     [self sd_cancelCurrentHighlightedImageLoad];
 
     if (url) {

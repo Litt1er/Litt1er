@@ -410,6 +410,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 
         @autoreleasepool {
             UIImage *diskImage = [self diskImageForKey:key];
+            // find image from disk and save in memeryCache
             if (diskImage && self.shouldCacheImagesInMemory) {
                 NSUInteger cost = SDCacheCostForImage(diskImage);
                 [self.memCache setObject:diskImage forKey:key cost:cost];
@@ -420,7 +421,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
             });
         }
     });
-
+    // when url not nil & done block & memerycache dont have image
     return operation;
 }
 

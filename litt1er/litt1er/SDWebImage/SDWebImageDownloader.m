@@ -136,6 +136,8 @@ static NSString *const kCompletedCallbackKey = @"completed";
     __weak __typeof(self)wself = self;
 
     [self addProgressCallback:progressBlock completedBlock:completedBlock forURL:url createCallback:^{
+        
+        // if url is not nil this block will be perform
         NSTimeInterval timeoutInterval = wself.downloadTimeout;
         if (timeoutInterval == 0.0) {
             timeoutInterval = 15.0;
@@ -223,6 +225,19 @@ static NSString *const kCompletedCallbackKey = @"completed";
         }
         return;
     }
+    /*
+     共同点：
+     
+     1、等待在它前面插入队列的任务先执行完
+     
+     2、等待他们自己的任务执行完再执行后面的任务
+     
+     不同点：
+     
+     1、dispatch_barrier_sync将自己的任务插入到队列的时候，需要等待自己的任务结束之后才会继续插入被写在它后面的任务，然后执行它们
+     
+     2、dispatch_barrier_async将自己的任务插入到队列之后，不会等待自己的任务结束，它会继续把后面的任务插入到队列，然后等待自己的任务结束后才执行后面任务。
+     */
 
     dispatch_barrier_sync(self.barrierQueue, ^{
         BOOL first = NO;
