@@ -7,6 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Litt1erProtocol.h"
+
+FOUNDATION_EXPORT NSArray * Litt1erTest (NSDictionary *test);
+
 
 @interface ViewController : UIViewController
 
