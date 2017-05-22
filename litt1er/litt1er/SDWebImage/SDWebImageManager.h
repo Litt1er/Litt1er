@@ -209,6 +209,8 @@ SDWebImageManager *manager = [SDWebImageManager sharedManager];
  *
  * @return Returns an NSObject conforming to SDWebImageOperation. Should be an instance of SDWebImageDownloaderOperation
  */
+
+//概述了SDWenImageManager的作用,其实UIImageVIew+WebCache这个Category背后执行操作的就是这个SDWebImageManager.它会绑定一个下载器也就是SDwebImageDownloader和一个缓存SDImageCache
 - (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url
                                          options:(SDWebImageOptions)options
                                         progress:(SDWebImageDownloaderProgressBlock)progressBlock

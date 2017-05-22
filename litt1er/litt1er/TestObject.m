@@ -10,7 +10,17 @@
 
 @implementation TestObject
 
+- (id)copyWithZone:(nullable NSZone *)zone
+{
+    TestObject *object = [[TestObject alloc] init];
+    object.name = self.name;
+    return object;
+}
 
-
-
+- (void)setName:(NSString *)name
+{
+//    _name = name;
+    _name = [name copy];
+    NSLog(@"%p%p",_name,name);
+}
 @end

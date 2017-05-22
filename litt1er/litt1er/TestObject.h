@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface TestObject : NSObject
+@interface TestObject : NSObject <NSCopying>
+
+@property (nonatomic, copy) NSString *name;
 
 @end

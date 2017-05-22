@@ -89,14 +89,22 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
 }
 
 - (void)start {
+    //先加一把线程锁,保证执行到这里的时候只有当前线程在执行下面的方法
     @synchronized (self) {
+        //如果下载操作被取消了
         if (self.isCancelled) {
             self.finished = YES;
+            //把下载相关的属性置为nil
             [self reset];
             return;
         }
 
 #if TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+        /**
+         App 进入后台时,请求继续执行一段时间的方法,
+         使用UIApplication的beginBackgroundTaskWithExpirationHandler方法向系统借用一点时间，
+         继续执行下面的代码来完成connection的创建和进行下载任务。
+         */
         Class UIApplicationClass = NSClassFromString(@"UIApplication");
         BOOL hasApplication = UIApplicationClass && [UIApplicationClass respondsToSelector:@selector(sharedApplication)];
         if (hasApplication && [self shouldContinueWhenAppEntersBackground]) {
@@ -106,6 +114,10 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
                 __strong __typeof (wself) sself = wself;
 
                 if (sself) {
+                    /**在后台任务执行时间超过最大时间时，
+                     也就是后台任务过期执行过期回调。
+                     在回调主动将这个后台任务结束。
+                     */
                     [sself cancel];
 
                     [app endBackgroundTask:sself.backgroundTaskId];
@@ -131,6 +143,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
         }
         
         self.dataTask = [session dataTaskWithRequest:self.request];
+        // 下载任务执行的状态,在执行是YES,不在执行时NO
         self.executing = YES;
         self.thread = [NSThread currentThread];
     }
@@ -139,18 +152,21 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
 
     if (self.dataTask) {
         if (self.progressBlock) {
+            //任务开始立刻执行一次进度的回调
             self.progressBlock(0, NSURLResponseUnknownLength);
         }
         dispatch_async(dispatch_get_main_queue(), ^{
+            //发送开始下载的通知
             [[NSNotificationCenter defaultCenter] postNotificationName:SDWebImageDownloadStartNotification object:self];
         });
     }
     else {
+        //如果dataTask创建失败,这里直接执行完成回调,并传递一个dataTask没有初始化的错误
         if (self.completedBlock) {
             self.completedBlock(nil, nil, [NSError errorWithDomain:NSURLErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Connection can't be initialized"}], YES);
         }
     }
-
+//执行到这里说明下载操作已经完成了(无论是成功还是错误),所以要停止在后台的执行,使用endBackgroundTask:
 #if TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
     Class UIApplicationClass = NSClassFromString(@"UIApplication");
     if(!UIApplicationClass || ![UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {

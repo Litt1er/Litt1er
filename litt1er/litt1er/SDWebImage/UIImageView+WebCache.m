@@ -83,8 +83,10 @@ static char TAG_ACTIVITY_SHOW;
                 }
             });
         }];
+        // 为UIImageView绑定新的操作,以为之前把ImageView的操作cancel了
         [self sd_setImageLoadOperation:operation forKey:@"UIImageViewImageLoad"];
     } else {
+         // 判断url不存在，移除加载指示器，执行完成回调，传递错误信息。
         dispatch_main_async_safe(^{
             [self removeActivityIndicator];
             if (completedBlock) {
