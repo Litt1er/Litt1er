@@ -26,6 +26,10 @@
 		17509D971EC5951800D49DAA /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 17509D851EC5951800D49DAA /* UIRefreshControl+AFNetworking.m */; };
 		17509D981EC5951800D49DAA /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 17509D871EC5951800D49DAA /* UIWebView+AFNetworking.m */; };
 		17509D9B1EC5AF4100D49DAA /* TestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 17509D9A1EC5AF4100D49DAA /* TestObject.m */; };
+		17665D4320492C57007490E3 /* HSSessionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 17665D3A20492C57007490E3 /* HSSessionModel.m */; };
+		17665D4420492C57007490E3 /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 17665D3C20492C57007490E3 /* NSString+Hash.m */; };
+		17665D4520492C57007490E3 /* HSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17665D3F20492C57007490E3 /* HSViewController.m */; };
+		17665D4620492C57007490E3 /* HSDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 17665D4120492C57007490E3 /* HSDownloadManager.m */; };
 		17F5EBA11EC0665B003C30C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 17F5EBA01EC0665B003C30C7 /* main.m */; };
 		17F5EBA41EC0665B003C30C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17F5EBA31EC0665B003C30C7 /* AppDelegate.m */; };
 		17F5EBA71EC0665B003C30C7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17F5EBA61EC0665B003C30C7 /* ViewController.m */; };
@@ -110,6 +114,14 @@
 		17509D871EC5951800D49DAA /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
 		17509D991EC5AF4100D49DAA /* TestObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestObject.h; sourceTree = "<group>"; };
 		17509D9A1EC5AF4100D49DAA /* TestObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestObject.m; sourceTree = "<group>"; };
+		17665D3A20492C57007490E3 /* HSSessionModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSSessionModel.m; sourceTree = "<group>"; };
+		17665D3C20492C57007490E3 /* NSString+Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hash.m"; sourceTree = "<group>"; };
+		17665D3D20492C57007490E3 /* NSString+Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hash.h"; sourceTree = "<group>"; };
+		17665D3E20492C57007490E3 /* HSDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSDownloadManager.h; sourceTree = "<group>"; };
+		17665D3F20492C57007490E3 /* HSViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSViewController.m; sourceTree = "<group>"; };
+		17665D4020492C57007490E3 /* HSSessionModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSSessionModel.h; sourceTree = "<group>"; };
+		17665D4120492C57007490E3 /* HSDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSDownloadManager.m; sourceTree = "<group>"; };
+		17665D4220492C57007490E3 /* HSViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSViewController.h; sourceTree = "<group>"; };
 		17F5EB9C1EC0665B003C30C7 /* litt1er.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = litt1er.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17F5EBA01EC0665B003C30C7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		17F5EBA21EC0665B003C30C7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -251,6 +263,29 @@
 			path = "UIKit+AFNetworking";
 			sourceTree = "<group>";
 		};
+		17665D3920492C57007490E3 /* 视频、音乐或图片下载 */ = {
+			isa = PBXGroup;
+			children = (
+				17665D3A20492C57007490E3 /* HSSessionModel.m */,
+				17665D4020492C57007490E3 /* HSSessionModel.h */,
+				17665D3B20492C57007490E3 /* MD5 */,
+				17665D3E20492C57007490E3 /* HSDownloadManager.h */,
+				17665D4120492C57007490E3 /* HSDownloadManager.m */,
+				17665D3F20492C57007490E3 /* HSViewController.m */,
+				17665D4220492C57007490E3 /* HSViewController.h */,
+			);
+			path = "视频、音乐或图片下载";
+			sourceTree = "<group>";
+		};
+		17665D3B20492C57007490E3 /* MD5 */ = {
+			isa = PBXGroup;
+			children = (
+				17665D3C20492C57007490E3 /* NSString+Hash.m */,
+				17665D3D20492C57007490E3 /* NSString+Hash.h */,
+			);
+			path = MD5;
+			sourceTree = "<group>";
+		};
 		17F5EB931EC0665B003C30C7 = {
 			isa = PBXGroup;
 			children = (
@@ -274,6 +309,7 @@
 		17F5EB9E1EC0665B003C30C7 /* litt1er */ = {
 			isa = PBXGroup;
 			children = (
+				17665D3920492C57007490E3 /* 视频、音乐或图片下载 */,
 				1704AF631ED2FAF4004A6F95 /* 优雅的timer */,
 				17509D621EC5951800D49DAA /* AFNetworking */,
 				17F5EBD21EC06670003C30C7 /* SDWebImage */,
@@ -425,7 +461,7 @@
 				TargetAttributes = {
 					17F5EB9B1EC0665B003C30C7 = {
 						CreatedOnToolsVersion = 8.2.1;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					17F5EBB41EC0665C003C30C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -497,6 +533,8 @@
 				17F5EBFB1EC06670003C30C7 /* UIImage+GIF.m in Sources */,
 				17509D881EC5951800D49DAA /* AFHTTPSessionManager.m in Sources */,
 				17509D911EC5951800D49DAA /* AFImageDownloader.m in Sources */,
+				17665D4320492C57007490E3 /* HSSessionModel.m in Sources */,
+				17665D4520492C57007490E3 /* HSViewController.m in Sources */,
 				17509D891EC5951800D49DAA /* AFNetworkReachabilityManager.m in Sources */,
 				17F5EBF61EC06670003C30C7 /* SDWebImageDownloader.m in Sources */,
 				17F5EBFE1EC06670003C30C7 /* UIImageView+HighlightedWebCache.m in Sources */,
@@ -508,6 +546,7 @@
 				17509D8D1EC5951800D49DAA /* AFURLSessionManager.m in Sources */,
 				17F5EBF51EC06670003C30C7 /* SDWebImageDecoder.m in Sources */,
 				17509D921EC5951800D49DAA /* AFNetworkActivityIndicatorManager.m in Sources */,
+				17665D4420492C57007490E3 /* NSString+Hash.m in Sources */,
 				17F5EBA71EC0665B003C30C7 /* ViewController.m in Sources */,
 				17509D9B1EC5AF4100D49DAA /* TestObject.m in Sources */,
 				17509D8F1EC5951800D49DAA /* README.md in Sources */,
@@ -525,6 +564,7 @@
 				17F5EBA11EC0665B003C30C7 /* main.m in Sources */,
 				17509D941EC5951800D49DAA /* UIButton+AFNetworking.m in Sources */,
 				17509D971EC5951800D49DAA /* UIRefreshControl+AFNetworking.m in Sources */,
+				17665D4620492C57007490E3 /* HSDownloadManager.m in Sources */,
 				17F5EC001EC06670003C30C7 /* UIView+WebCacheOperation.m in Sources */,
 				17F5EBF31EC06670003C30C7 /* SDImageCache.m in Sources */,
 				17509D8C1EC5951800D49DAA /* AFURLResponseSerialization.m in Sources */,
@@ -677,6 +717,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = litt1er/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -692,11 +733,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = litt1er/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = yaso.litt1er;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
