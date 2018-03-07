@@ -16,23 +16,27 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
      * By default, when a URL fail to be downloaded, the URL is blacklisted so the library won't keep trying.
      * This flag disable this blacklisting.
      */
+    //失败后重试
     SDWebImageRetryFailed = 1 << 0,
 
     /**
      * By default, image downloads are started during UI interactions, this flags disable this feature,
      * leading to delayed download on UIScrollView deceleration for instance.
      */
+    //UI交互期间开始下载，导致延迟下载比如UIScrollView减速
     SDWebImageLowPriority = 1 << 1,
 
     /**
      * This flag disables on-disk caching
      */
+    //只进行内存缓存
     SDWebImageCacheMemoryOnly = 1 << 2,
 
     /**
      * This flag enables progressive download, the image is displayed progressively during download as a browser would do.
      * By default, the image is only displayed once completely downloaded.
      */
+    //这个标志可以渐进式下载,显示的图像是逐步在下载
     SDWebImageProgressiveDownload = 1 << 3,
 
     /**
@@ -43,12 +47,14 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
      *
      * Use this flag only if you can't make your URLs static with embedded cache busting parameter.
      */
+    //刷新缓存
     SDWebImageRefreshCached = 1 << 4,
 
     /**
      * In iOS 4+, continue the download of the image if the app goes to background. This is achieved by asking the system for
      * extra time in background to let the request finish. If the background task expires the operation will be cancelled.
      */
+    //后台下载
     SDWebImageContinueInBackground = 1 << 5,
 
     /**
@@ -67,12 +73,16 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
      * By default, images are loaded in the order in which they were queued. This flag moves them to
      * the front of the queue.
      */
+    //优先下载
+
     SDWebImageHighPriority = 1 << 8,
     
     /**
      * By default, placeholder images are loaded while the image is loading. This flag will delay the loading
      * of the placeholder image until after the image has finished loading.
      */
+    //延迟占位符
+
     SDWebImageDelayPlaceholder = 1 << 9,
 
     /**

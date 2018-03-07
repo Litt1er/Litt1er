@@ -138,6 +138,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
     [self addProgressCallback:progressBlock completedBlock:completedBlock forURL:url createCallback:^{
         
         // if url is not nil this block will be perform
+        //配置下载超时的时间
         NSTimeInterval timeoutInterval = wself.downloadTimeout;
         if (timeoutInterval == 0.0) {
             timeoutInterval = 15.0;
@@ -155,7 +156,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         //通过设置 NSMutableURLRequest.HTTPShouldHandleCookies = YES
         //的方式来处理存储在NSHTTPCookieStore的cookies
         request.HTTPShouldHandleCookies = (options & SDWebImageDownloaderHandleCookies);
-        //返回在接到上一个请求得得响应之前,饰扣需要传输数据,YES传输,NO不传输
+        //返回在接到上一个请求得得响应之前,是否需要传输数据,YES传输,NO不传输
         request.HTTPShouldUsePipelining = YES;
         /**
          如果你自定义了wself.headersFilter,那就用你自己设置的

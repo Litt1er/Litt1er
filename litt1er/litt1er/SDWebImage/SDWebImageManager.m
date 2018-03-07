@@ -36,7 +36,13 @@
     });
     return instance;
 }
-
+/*
+*初始化方法
+*1.获得一个SDImageCache的单例
+*2.获得一个SDWebImageDownloader的单例
+*3.新建一个MutableSet来存储下载失败的url
+*4.新建一个用来存储下载operation的可遍数组
+*/
 - (instancetype)init {
     SDImageCache *cache = [SDImageCache sharedImageCache];
     SDWebImageDownloader *downloader = [SDWebImageDownloader sharedDownloader];
@@ -57,7 +63,7 @@
     if (!url) {
         return @"";
     }
-    
+    // 如果用户有设置cacheKeyFilter  就用执行这个block返回
     if (self.cacheKeyFilter) {
         return self.cacheKeyFilter(url);
     } else {
@@ -65,17 +71,19 @@
     }
 }
 
+//检查一个图片是否被缓存
 - (BOOL)cachedImageExistsForURL:(NSURL *)url {
     NSString *key = [self cacheKeyForURL:url];
     if ([self.imageCache imageFromMemoryCacheForKey:key] != nil) return YES;
     return [self.imageCache diskImageExistsWithKey:key];
 }
-
+// 检测硬盘里是否缓存了图片
 - (BOOL)diskImageExistsForURL:(NSURL *)url {
     NSString *key = [self cacheKeyForURL:url];
     return [self.imageCache diskImageExistsWithKey:key];
 }
 
+//判断图片有没有在内存缓存中,如果图片在内存缓存中存在,就在主线程里面回调block,如果图片没有在内存缓存中就去查找是不是在磁盘缓存里面,然后在主线程里面回到block
 - (void)cachedImageExistsForURL:(NSURL *)url
                      completion:(SDWebImageCheckCacheCompletionBlock)completionBlock {
     NSString *key = [self cacheKeyForURL:url];
@@ -100,6 +108,7 @@
     }];
 }
 
+//查询图片是否在磁盘缓存里面,然后在主线程里面回调block
 - (void)diskImageExistsForURL:(NSURL *)url
                    completion:(SDWebImageCheckCacheCompletionBlock)completionBlock {
     NSString *key = [self cacheKeyForURL:url];
@@ -112,6 +121,7 @@
     }];
 }
 
+//下载
 - (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url
                                          options:(SDWebImageOptions)options
                                         progress:(SDWebImageDownloaderProgressBlock)progressBlock
@@ -122,11 +132,14 @@
 
     // Very common mistake is to send the URL using NSString object instead of NSURL. For some strange reason, XCode won't
     // throw any warning for this type mismatch. Here we failsafe this error by allowing URLs to be passed as NSString.
+    
+    //防止开发者把传入NSString类型的url,如果url的类型是NSString就给转换成NSURL类型
     if ([url isKindOfClass:NSString.class]) {
         url = [NSURL URLWithString:(NSString *)url];
     }
 
     // Prevents app crashing on argument type error like sending NSNull instead of NSURL
+    //如果转换NSURL失败,就把传入的url置为nil下载停止
     if (![url isKindOfClass:NSURL.class]) {
         url = nil;
     }
@@ -139,6 +152,7 @@
         isFailedUrl = [self.failedURLs containsObject:url];
     }
 
+    //如果不相同并且isFailedUrl是true.那么就回调一个error的block
     if (url.absoluteString.length == 0 || (!(options & SDWebImageRetryFailed) && isFailedUrl)) {
         dispatch_main_sync_safe(^{
             NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:nil];
@@ -147,12 +161,15 @@
         return operation;
     }
 
+    //把operation加入到self.runningOperations的数组里面,并创建一个互斥线程锁来保护这个操作
     @synchronized (self.runningOperations) {
         [self.runningOperations addObject:operation];
     }
+    //获取image的url对应的key
     NSString *key = [self cacheKeyForURL:url];
 
     // search the iamge for url in disk
+    //异步查询磁盘缓存的方法
     operation.cacheOperation = [self.imageCache queryDiskCacheForKey:key done:^(UIImage *image, SDImageCacheType cacheType) {
         // if operation is cancel  remove it to runningOperations array
         if (operation.isCancelled) {
@@ -172,7 +189,8 @@
          8（10进制） 还是真
          */
         //条件1:在缓存中没有找到图片或者options选项里面包含了SDWebImageRefreshCached(这两项都需要进行请求网络图片的)
-        //条件2:代理允许下载,SDWebImageManagerDelegate的delegate不能响应imageManager:shouldDownloadImageForURL:方法或者能响应方法且方法返回值为YES.也就是没有实现这个方法就是允许的,如果实现了的话,返回YES才是允许
+        //条件2:SDWebImageManagerDelegate的delegate不能响应imageManager:shouldDownloadImageForURL:方法
+        //或者能响应方法且方法返回值为YES
         if ((!image || options & SDWebImageRefreshCached) && (![self.delegate respondsToSelector:@selector(imageManager:shouldDownloadImageForURL:)] || [self.delegate imageManager:self shouldDownloadImageForURL:url])) {
             // image & option > 二进制第五位数上 要是1才行 == option=SDWebImageRefreshCached
             //如果在缓存中找到了image且options选项包含SDWebImageRefreshCached,先在主线程完成一次回调,使用的是缓存中找的图片
@@ -181,6 +199,7 @@
                 dispatch_main_sync_safe(^{
                     // If image was found in the cache but SDWebImageRefreshCached is provided, notify about the cached image
                     // AND try to re-download it in order to let a chance to NSURLCache to refresh it from server.
+                 // 如果在缓存中找到了image但是设置了SDWebImageRefreshCached选项，传递缓存的image，同时尝试重新下载它来让NSURLCache有机会接收服务器端的更新
                     completedBlock(image, nil, cacheType, YES, url);
                 });
             }
@@ -202,7 +221,7 @@
             // 如果image已经被缓存但是设置了需要请求服务器刷新的选项
             if (image && options & SDWebImageRefreshCached) {
                 // force progressive off if image already cached but forced refreshing
-                //强制关闭渐进式选项
+                // 如果image已经被缓存但是设置了需要请求服务器刷新的选项，强制关闭渐进式选项
                 downloaderOptions &= ~SDWebImageDownloaderProgressiveDownload;
                 // 忽略从NSURLCache读取的image
                 downloaderOptions |= SDWebImageDownloaderIgnoreCachedResponse;

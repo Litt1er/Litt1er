@@ -96,6 +96,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         kPNGSignatureData = [NSData dataWithBytes:kPNGSignatureBytes length:8];
 
         // Create IO serial queue
+        //DISPATCH_QUEUE_SERIAL代表的是创建一个串行的队列,所以_ioQueue是一个串行队列(任务一个执行完毕才执行下一个)
         _ioQueue = dispatch_queue_create("com.hackemist.SDWebImageCache", DISPATCH_QUEUE_SERIAL);
 
         // Init default values
@@ -396,26 +397,32 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     }
 
     // First check the in-memory cache...
+    // 1.首先查看内存缓存,如果查找到,则直接调用doneBlock并返回
     UIImage *image = [self imageFromMemoryCacheForKey:key];
     if (image) {
         doneBlock(image, SDImageCacheTypeMemory);
         return nil;
     }
-
+    
+    //2.如果内存中没有,则在磁盘中查找,如果找到,则将其放到内存缓存中,并调用doneBlock回调
     NSOperation *operation = [NSOperation new];
+    ////在ioQueue中串行处理所有磁盘缓存
     dispatch_async(self.ioQueue, ^{
         if (operation.isCancelled) {
             return;
         }
 
         @autoreleasepool {
+            //根据图片的url对应的key去磁盘缓存中查找图片
             UIImage *diskImage = [self diskImageForKey:key];
             // find image from disk and save in memeryCache
+            //如果可以在磁盘中查找到image,并且self.shouldCacheImagesInMemory = YES(默认是YES,if memory cache is enabled)就将image储存到内存缓存中
             if (diskImage && self.shouldCacheImagesInMemory) {
                 NSUInteger cost = SDCacheCostForImage(diskImage);
+                //self.memCache是NSCache创建的一个对象,下面的方法是NSCache储存对象的方法,
                 [self.memCache setObject:diskImage forKey:key cost:cost];
             }
-
+            //在主线程里面调用doneBlock返回
             dispatch_async(dispatch_get_main_queue(), ^{
                 doneBlock(diskImage, SDImageCacheTypeDisk);
             });

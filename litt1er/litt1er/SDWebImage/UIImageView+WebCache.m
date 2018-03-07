@@ -54,6 +54,7 @@ static char TAG_ACTIVITY_SHOW;
     if (url) {
 
         // check if activityView is enabled or not
+        // 正在加载指示器。如果设置了，使用`addActivityIndicator`方法向self添加指示器
         if ([self showActivityIndicatorView]) {
             [self addActivityIndicator];
         }
