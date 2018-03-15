@@ -25,10 +25,10 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 
 typedef NS_ENUM(NSInteger, AFNetworkReachabilityStatus) {
-    AFNetworkReachabilityStatusUnknown          = -1,
-    AFNetworkReachabilityStatusNotReachable     = 0,
-    AFNetworkReachabilityStatusReachableViaWWAN = 1,
-    AFNetworkReachabilityStatusReachableViaWiFi = 2,
+    AFNetworkReachabilityStatusUnknown          = -1,//未知
+    AFNetworkReachabilityStatusNotReachable     = 0,//无网络
+    AFNetworkReachabilityStatusReachableViaWWAN = 1,//自带网络
+    AFNetworkReachabilityStatusReachableViaWiFi = 2,//wifi
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -46,21 +46,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  The current network reachability status.
+网络状态
  */
 @property (readonly, nonatomic, assign) AFNetworkReachabilityStatus networkReachabilityStatus;
 
 /**
  Whether or not the network is currently reachable.
+ 是否是可达的
  */
 @property (readonly, nonatomic, assign, getter = isReachable) BOOL reachable;
 
 /**
  Whether or not the network is currently reachable via WWAN.
+ 当前连接是否是WWAN
  */
 @property (readonly, nonatomic, assign, getter = isReachableViaWWAN) BOOL reachableViaWWAN;
 
 /**
  Whether or not the network is currently reachable via WiFi.
+ 当前连接是否是WiFi
  */
 @property (readonly, nonatomic, assign, getter = isReachableViaWiFi) BOOL reachableViaWiFi;
 
@@ -86,6 +90,8 @@ NS_ASSUME_NONNULL_BEGIN
  @param domain The domain used to evaluate network reachability.
 
  @return An initialized network reachability manager, actively monitoring the specified domain.
+ 
+ 监听制定domain的网络状态
  */
 + (instancetype)managerForDomain:(NSString *)domain;
 
@@ -95,6 +101,8 @@ NS_ASSUME_NONNULL_BEGIN
  @param address The socket address (`sockaddr_in6`) used to evaluate network reachability.
 
  @return An initialized network reachability manager, actively monitoring the specified socket address.
+ 
+ 监听某个socket地址的网络状态
  */
 + (instancetype)managerForAddress:(const void *)address;
 
@@ -113,11 +121,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Starts monitoring for changes in network reachability status.
+ 打开监听
  */
 - (void)startMonitoring;
 
 /**
  Stops monitoring for changes in network reachability status.
+ 关闭监听
  */
 - (void)stopMonitoring;
 
@@ -127,6 +137,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Returns a localized string representation of the current network reachability status.
+ 返回一个网络状态的本地语言的字符串。往往我们可以根据这个字符串来告诉用户，当前网络发生了什么，当然，也可以根据状态自定义提示文字。
  */
 - (NSString *)localizedNetworkReachabilityStatusString;
 
@@ -138,6 +149,12 @@ NS_ASSUME_NONNULL_BEGIN
  Sets a callback to be executed when the network availability of the `baseURL` host changes.
 
  @param block A block object to be executed when the network availability of the `baseURL` host changes.. This block has no return value and takes a single argument which represents the various reachability states from the device to the `baseURL`.
+ 
+ 设置网络转态改变的回调，监听网络改变的回调有两种方式：
+ 
+ 1.使用这个方法。
+ 
+ 2.监听AFNetworkingReachabilityDidChangeNotification通知。
  */
 - (void)setReachabilityStatusChangeBlock:(nullable void (^)(AFNetworkReachabilityStatus status))block;
 
@@ -190,6 +207,15 @@ NS_ASSUME_NONNULL_BEGIN
 
  @warning In order for network reachability to be monitored, include the `SystemConfiguration` framework in the active target's "Link Binary With Library" build phase, and add `#import <SystemConfiguration/SystemConfiguration.h>` to the header prefix of the project (`Prefix.pch`).
  */
+/*
+ 这个是与网络状态变化相关的通知。接受的通知中会有一个userinfo 是一个NSDictionary 其中key就是
+ 
+ AFNetworkingReachabilityNotificationStatusItem
+ 
+ *** 这简单的两行代码能够告诉我们的是，我们平时的开发中 但凡设计到发通知的功能，我们应该把通知的字符串封装到一个专有的文件中，同时在文件内部按不同模块进行区分，当然必要的注释也很有必要。
+ 
+ ps： FOUNDATION_EXPORT 和#define 都能定义常量。FOUNDATION_EXPORT 能够使用==进行判断，效率略高。而且能够隐藏定义细节(就是实现部分不在.中)
+ */
 FOUNDATION_EXPORT NSString * const AFNetworkingReachabilityDidChangeNotification;
 FOUNDATION_EXPORT NSString * const AFNetworkingReachabilityNotificationStatusItem;
 
@@ -199,6 +225,7 @@ FOUNDATION_EXPORT NSString * const AFNetworkingReachabilityNotificationStatusIte
 
 /**
  Returns a localized string representation of an `AFNetworkReachabilityStatus` value.
+ 对函数：根据状态获取字符串  声明
  */
 FOUNDATION_EXPORT NSString * AFStringFromNetworkReachabilityStatus(AFNetworkReachabilityStatus status);
 
